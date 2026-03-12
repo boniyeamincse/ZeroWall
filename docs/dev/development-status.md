@@ -71,10 +71,10 @@ This document tracks the 100 phases of software development for the ZeroWall pro
 | 65 | Console Menu | interactive serial/monitor console | Done | Done | Done |
 | 66 | zwlogd Aggregator | Centralized log collection daemon | Done | Done | Done |
 | 67 | WebSocket Core | Real-time data pub/sub system | Pending | Pending | Done |
-| 68 | Netflow/IPFIX | Traffic flow export logic | Pending | Pending | Done |
-| 69 | FRR Integration | Dynamic routing (BGP/OSPF) support | Pending | Pending | Done |
-| 70 | BGP Config UI | Graphical bgpd management | Pending | Pending | Done |
-| 71 | OSPF Config UI | Graphical ospfd management | Pending | Pending | Done |
+| 68 | Netflow/IPFIX | Traffic flow export logic | Done | Done | Done |
+| 69 | FRR Integration | Dynamic routing (BGP/OSPF) support | Done | Done | Done |
+| 70 | BGP Config UI | Graphical bgpd management | Done | Done | Done |
+| 71 | OSPF Config UI | Graphical ospfd management | Done | Done | Done |
 | 72 | Multi-WAN Failover | Gateway groups and monitoring logic | Pending | Pending | Done |
 | 73 | Policy Routing | Source-based gateway selection | Pending | Pending | Done |
 | 74 | DNSSEC Support | Secure DNS signature verification | Pending | Pending | Done |
