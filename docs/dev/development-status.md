@@ -44,11 +44,11 @@ This document tracks the 100 phases of software development for the ZeroWall pro
 | 38 | Split Tunneling | Implementation of AllowedIPs logic | Done | Done | Done |
 | 39 | Suricata Engine | IDS/IPS core integration | Done | Done | Done |
 | 40 | IDS Rules Manager | Automatic ruleset updater logic | Done | Done | Done |
-| 41 | IDS Alert Log | Real-time EVE JSON log parsing | Pending | Pending | Done |
-| 42 | GeoIP Blocking | MaxMind DB integration for firewall | Pending | Pending | Done |
-| 43 | Traffic Shaper | HFSC/FairQ implementation | Pending | Pending | Done |
-| 44 | CARP High Availability | Active/Passive failover logic | Pending | Pending | Done |
-| 45 | pfsync Module | Connection state synchronization | Pending | Pending | Done |
+| 41 | IDS Alert Log | Real-time EVE JSON log parsing | Done | Done | Done |
+| 42 | GeoIP Blocking | MaxMind DB integration for firewall | Done | Done | Done |
+| 43 | Traffic Shaper | HFSC/FairQ implementation | Done | Done | Done |
+| 44 | CARP High Availability | Active/Passive failover logic | Done | Done | Done |
+| 45 | pfsync Module | Connection state synchronization | Done | Done | Done |
 | 46 | XMLRPC Sync | Config synchronization across nodes | Pending | Pending | Done |
 | 47 | Backend API Core | zwapi base Go server implementation | Pending | Pending | Done |
 | 48 | JWT Auth System | Secure token-based API access | Pending | Pending | Done |
