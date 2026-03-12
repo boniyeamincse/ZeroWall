@@ -49,21 +49,21 @@ This document tracks the 100 phases of software development for the ZeroWall pro
 | 43 | Traffic Shaper | HFSC/FairQ implementation | Done | Done | Done |
 | 44 | CARP High Availability | Active/Passive failover logic | Done | Done | Done |
 | 45 | pfsync Module | Connection state synchronization | Done | Done | Done |
-| 46 | XMLRPC Sync | Config synchronization across nodes | Pending | Pending | Done |
-| 47 | Backend API Core | zwapi base Go server implementation | Pending | Pending | Done |
-| 48 | JWT Auth System | Secure token-based API access | Pending | Pending | Done |
-| 49 | RBAC Logic | Granular per-endpoint permissions | Pending | Pending | Done |
-| 50 | Config Daemon (zwconfigd) | Central configuration manager | Pending | Pending | Done |
-| 51 | Atomicity Engine | Safe config.xml writes with backups | Pending | Pending | Done |
-| 52 | Dashboard Layout | React shell and sidebar implementation | Pending | Pending | Done |
-| 53 | Widget System | Drag-and-drop dashboard components | Pending | Pending | Done |
-| 54 | Traffic Graphs | Real-time SVG/D3 charts | Pending | Pending | Done |
-| 55 | Firewall Rule UI | CRUD interface for pf rules | Pending | Pending | Done |
-| 56 | Log Viewer | Real-time log stream with filtering | Pending | Pending | Done |
-| 57 | VPN Status Page | Interactive VPN session manager | Pending | Pending | Done |
-| 58 | IDS/IPS Dashboard | Threat visualization and alerts | Pending | Pending | Done |
-| 59 | System Setup Wizard | Initial deployment flow | Pending | Pending | Done |
-| 60 | Certificate Manager | GUI for CAs and local certs | Pending | Pending | Done |
+| 46 | XMLRPC Sync | Config synchronization across nodes | Done | Done | Done |
+| 47 | Backend API Core | zwapi base Go server implementation | Done | Done | Done |
+| 48 | JWT Auth System | Secure token-based API access | Done | Done | Done |
+| 49 | RBAC Logic | Granular per-endpoint permissions | Done | Done | Done |
+| 50 | Config Daemon (zwconfigd) | Central configuration manager | Done | Done | Done |
+| 51 | Atomicity Engine | Safe config.xml writes with backups | Done | Done | Done |
+| 52 | Dashboard Layout | React shell and sidebar implementation | Done | Done | Done |
+| 53 | Widget System | Drag-and-drop dashboard components | Done | Done | Done |
+| 54 | Traffic Graphs | Real-time SVG/D3 charts | Done | Done | Done |
+| 55 | Firewall Rule UI | CRUD interface for pf rules | Done | Done | Done |
+| 56 | Log Viewer | Real-time log stream with filtering | Done | Done | Done |
+| 57 | VPN Status Page | Interactive VPN session manager | Done | Done | Done |
+| 58 | IDS/IPS Dashboard | Threat visualization and alerts | Done | Done | Done |
+| 59 | System Setup Wizard | Initial deployment flow | Done | Done | Done |
+| 60 | Certificate Manager | GUI for CAs and local certs | Done | Done | Done |
 | 61 | Backup/Restore Tool | Manual and scheduled config backups | Pending | Pending | Done |
 | 62 | Firmware Update | OS upgrade and verification logic | Done | Done | Done |
 | 63 | Package Manager | Add-on system implementation | Done | Done | Done |
