@@ -80,9 +80,10 @@ This document tracks the 100 phases of software development for the ZeroWall pro
 | 74 | DNSSEC Support | Secure DNS signature verification | Pending | Pending | Done |
 | 75 | IPv6 Stack | Full Dual-Stack support validation | Pending | Pending | Done |
 | 76 | Captive Portal | User authentication for Guest links | Done | Done | Done |
-| 77 | RADIUS Integration | External auth for VPN and Dashboard | Pending | Pending | Done |
-| 78 | LDAP Connector | AD/LDAP user sync logic | Pending | Pending | Done |
-| 79 | REST API Docs | Swagger/OpenAPI spec generation | Pending | Pending | Done |
+| 77 | RADIUS Integration | External auth for VPN and Dashboard | Done | Done | Done |
+| 78 | LDAP Connector | AD/LDAP user sync logic | Done | Done | Done |
+| 79 | REST API Docs | Swagger/OpenAPI spec generation | Done | Done | Done |
+| 80 | Reporting Engine | Integrated RRDtool telemetry | Done | Done | Done |
 | 80 | Plugin SDK | Development tools for 3rd parties | Pending | Pending | Done |
 | 81 | Unit Test Suite | Coverage for Go and JS modules | Pending | Pending | Done |
 | 82 | Integration Tests | Virtual multi-node test harness | Pending | Pending | Done |
