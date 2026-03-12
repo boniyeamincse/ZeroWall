@@ -79,7 +79,7 @@ This document tracks the 100 phases of software development for the ZeroWall pro
 | 73 | Policy Routing | Source-based gateway selection | Pending | Pending | Done |
 | 74 | DNSSEC Support | Secure DNS signature verification | Pending | Pending | Done |
 | 75 | IPv6 Stack | Full Dual-Stack support validation | Pending | Pending | Done |
-| 76 | Captive Portal | User authentication for Guest links | Pending | Pending | Done |
+| 76 | Captive Portal | User authentication for Guest links | Done | Done | Done |
 | 77 | RADIUS Integration | External auth for VPN and Dashboard | Pending | Pending | Done |
 | 78 | LDAP Connector | AD/LDAP user sync logic | Pending | Pending | Done |
 | 79 | REST API Docs | Swagger/OpenAPI spec generation | Pending | Pending | Done |
