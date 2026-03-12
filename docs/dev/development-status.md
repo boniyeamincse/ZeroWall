@@ -25,17 +25,17 @@ This document tracks the 100 phases of software development for the ZeroWall pro
 | 19 | Floating Rules | Develop global firewall rule support | Done | Done | Done |
 | 20 | Rule Scheduling | Time-based firewall rule activation | Done | Done | Done |
 | 21 | Anti-Lockout Rule | Implement protected management access | Done | Done | Done |
-| 22 | Interface Groups | Logical grouping of multiple interfaces | Pending | Pending | Done |
-| 23 | Bridge Interface | Support for Layer-2 bridging | Pending | Pending | Done |
-| 24 | Wireless AP Mode | HostAPD integration for WiFi support | Pending | Pending | Done |
-| 25 | PPPoE Implementation | Support for ADSL/Fiber WAN links | Pending | Pending | Done |
-| 26 | DHCP Server | Integrated ISC DHCP server management | Pending | Pending | Done |
-| 27 | DNS Resolver | Unbound integration and config generation | Pending | Pending | Done |
-| 28 | Dynamic DNS | Client for Cloudflare, DuckDNS, etc. | Pending | Pending | Done |
-| 29 | NTP Server | Time synchronization service | Pending | Pending | Done |
-| 30 | SNMP Module | System monitoring and telemetry export | Pending | Pending | Done |
-| 31 | WireGuard Module | Implementation of kernel-mode WG VPN | Pending | Pending | Done |
-| 32 | WireGuard Peer Mgmt | Peer configuration and key management | Pending | Pending | Done |
+| 22 | Interface Groups | Logical grouping of multiple interfaces | Done | Done | Done |
+| 23 | Bridge Interface | Support for Layer-2 bridging | Done | Done | Done |
+| 24 | Wireless AP Mode | HostAPD integration for WiFi support | Done | Done | Done |
+| 25 | PPPoE Implementation | Support for ADSL/Fiber WAN links | Done | Done | Done |
+| 26 | DHCP Server | Integrated ISC DHCP server management | Done | Done | Done |
+| 27 | DNS Resolver | Unbound integration and config generation | Done | Done | Done |
+| 28 | Dynamic DNS | Client for Cloudflare, DuckDNS, etc. | Done | Done | Done |
+| 29 | NTP Server | Time synchronization service | Done | Done | Done |
+| 30 | SNMP Module | System monitoring and telemetry export | Done | Done | Done |
+| 31 | WireGuard Module | Implementation of kernel-mode WG VPN | Done | Done | Done |
+| 32 | WireGuard Peer Mgmt | Peer configuration and key management | Done | Done | Done |
 | 33 | OpenVPN Server | Implementation of SSL/TLS VPN | Pending | Pending | Done |
 | 34 | OpenVPN Client | Client mode for site-to-site tunnels | Pending | Pending | Done |
 | 35 | OpenVPN Cert Mgmt | PKI and certificate handling | Pending | Pending | Done |
