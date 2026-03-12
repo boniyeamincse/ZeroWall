@@ -36,7 +36,7 @@ This document tracks the 100 phases of software development for the ZeroWall pro
 | 30 | SNMP Module | System monitoring and telemetry export | Done | Done | Done |
 | 31 | WireGuard Module | Implementation of kernel-mode WG VPN | Done | Done | Done |
 | 32 | WireGuard Peer Mgmt | Peer configuration and key management | Done | Done | Done |
-| 33 | OpenVPN Server | Implementation of SSL/TLS VPN | Pending | Pending | Done |
+| 33 | OpenVPN Server | Implementation of SSL/TLS VPN | Done | Done | Done |
 | 34 | OpenVPN Client | Client mode for site-to-site tunnels | Pending | Pending | Done |
 | 35 | OpenVPN Cert Mgmt | PKI and certificate handling | Pending | Pending | Done |
 | 36 | IPsec IKEv2 | Standard-based site-to-site VPN | Pending | Pending | Done |
