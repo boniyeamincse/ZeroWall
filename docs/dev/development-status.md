@@ -65,11 +65,11 @@ This document tracks the 100 phases of software development for the ZeroWall pro
 | 59 | System Setup Wizard | Initial deployment flow | Pending | Pending | Done |
 | 60 | Certificate Manager | GUI for CAs and local certs | Pending | Pending | Done |
 | 61 | Backup/Restore Tool | Manual and scheduled config backups | Pending | Pending | Done |
-| 62 | Firmware Update | OS upgrade and verification logic | Pending | Pending | Done |
-| 63 | Package Manager | Add-on system implementation | Pending | Pending | Done |
-| 64 | Diagnostics Toolkit | Ping, Traceroute, Packet capture UI | Pending | Pending | Done |
-| 65 | Console Menu | interactive serial/monitor console | Pending | Pending | Done |
-| 66 | zwlogd Aggregator | Centralized log collection daemon | Pending | Pending | Done |
+| 62 | Firmware Update | OS upgrade and verification logic | Done | Done | Done |
+| 63 | Package Manager | Add-on system implementation | Done | Done | Done |
+| 64 | Diagnostics Toolkit | Ping, Traceroute, Packet capture UI | Done | Done | Done |
+| 65 | Console Menu | interactive serial/monitor console | Done | Done | Done |
+| 66 | zwlogd Aggregator | Centralized log collection daemon | Done | Done | Done |
 | 67 | WebSocket Core | Real-time data pub/sub system | Pending | Pending | Done |
 | 68 | Netflow/IPFIX | Traffic flow export logic | Pending | Pending | Done |
 | 69 | FRR Integration | Dynamic routing (BGP/OSPF) support | Pending | Pending | Done |
