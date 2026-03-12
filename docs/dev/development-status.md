@@ -64,21 +64,21 @@ This document tracks the 100 phases of software development for the ZeroWall pro
 | 58 | IDS/IPS Dashboard | Threat visualization and alerts | Done | Done | Done |
 | 59 | System Setup Wizard | Initial deployment flow | Done | Done | Done |
 | 60 | Certificate Manager | GUI for CAs and local certs | Done | Done | Done |
-| 61 | Backup/Restore Tool | Manual and scheduled config backups | Pending | Pending | Done |
+| 61 | Backup/Restore Tool | Manual and scheduled config backups | Done | Done | Done |
 | 62 | Firmware Update | OS upgrade and verification logic | Done | Done | Done |
 | 63 | Package Manager | Add-on system implementation | Done | Done | Done |
 | 64 | Diagnostics Toolkit | Ping, Traceroute, Packet capture UI | Done | Done | Done |
 | 65 | Console Menu | interactive serial/monitor console | Done | Done | Done |
 | 66 | zwlogd Aggregator | Centralized log collection daemon | Done | Done | Done |
-| 67 | WebSocket Core | Real-time data pub/sub system | Pending | Pending | Done |
+| 67 | WebSocket Core | Real-time data pub/sub system | Done | Done | Done |
 | 68 | Netflow/IPFIX | Traffic flow export logic | Done | Done | Done |
 | 69 | FRR Integration | Dynamic routing (BGP/OSPF) support | Done | Done | Done |
 | 70 | BGP Config UI | Graphical bgpd management | Done | Done | Done |
 | 71 | OSPF Config UI | Graphical ospfd management | Done | Done | Done |
-| 72 | Multi-WAN Failover | Gateway groups and monitoring logic | Pending | Pending | Done |
-| 73 | Policy Routing | Source-based gateway selection | Pending | Pending | Done |
-| 74 | DNSSEC Support | Secure DNS signature verification | Pending | Pending | Done |
-| 75 | IPv6 Stack | Full Dual-Stack support validation | Pending | Pending | Done |
+| 72 | Multi-WAN Failover | Gateway groups and monitoring logic | Done | Done | Done |
+| 73 | Policy Routing | Source-based gateway selection | Done | Done | Done |
+| 74 | DNSSEC Support | Secure DNS signature verification | Done | Done | Done |
+| 75 | IPv6 Stack | Full Dual-Stack support validation | Done | Done | Done |
 | 76 | Captive Portal | User authentication for Guest links | Done | Done | Done |
 | 77 | RADIUS Integration | External auth for VPN and Dashboard | Done | Done | Done |
 | 78 | LDAP Connector | AD/LDAP user sync logic | Done | Done | Done |
