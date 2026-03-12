@@ -14,17 +14,17 @@ This document tracks the 100 phases of software development for the ZeroWall pro
 | 8 | UI/UX Design | Mockup React dashboard and navigation | Done | Done | Done |
 | 9 | Repository Init | Initialize Git and directory structure | Done | Done | Done |
 | 10 | License & Compliance | Add MIT License and Code of Conduct | Done | Done | Done |
-| 11 | Kernel Tuning | Implement FreeBSD sysctl optimizations | Pending | Pending | Done |
-| 12 | Driver Verification | Test NIC driver compatibility (Intel/Realtek) | Pending | Pending | Done |
-| 13 | Interface Manager | Implement physical interface detection logic | Pending | Pending | Done |
-| 14 | VLAN Implementation | Develop 802.1Q tagging support | Pending | Pending | Done |
-| 15 | LAGG Module | Implement Link Aggregation support | Pending | Pending | Done |
-| 16 | Firewall Engine (pf) | Core pf rules generation logic | Pending | Pending | Done |
-| 17 | NAT Implementation | Port forwarding and Outbound NAT logic | Pending | Pending | Done |
-| 18 | Rule Alias System | Implement IP/Port grouping (Aliases) | Pending | Pending | Done |
-| 19 | Floating Rules | Develop global firewall rule support | Pending | Pending | Done |
-| 20 | Rule Scheduling | Time-based firewall rule activation | Pending | Pending | Done |
-| 21 | Anti-Lockout Rule | Implement protected management access | Pending | Pending | Done |
+| 11 | Kernel Tuning | Implement FreeBSD sysctl optimizations | Done | Done | Done |
+| 12 | Driver Verification | Test NIC driver compatibility (Intel/Realtek) | Done | Done | Done |
+| 13 | Interface Manager | Implement physical interface detection logic | Done | Done | Done |
+| 14 | VLAN Implementation | Develop 802.1Q tagging support | Done | Done | Done |
+| 15 | LAGG Module | Implement Link Aggregation support | Done | Done | Done |
+| 16 | Firewall Engine (pf) | Core pf rules generation logic | Done | Done | Done |
+| 17 | NAT Implementation | Port forwarding and Outbound NAT logic | Done | Done | Done |
+| 18 | Rule Alias System | Implement IP/Port grouping (Aliases) | Done | Done | Done |
+| 19 | Floating Rules | Develop global firewall rule support | Done | Done | Done |
+| 20 | Rule Scheduling | Time-based firewall rule activation | Done | Done | Done |
+| 21 | Anti-Lockout Rule | Implement protected management access | Done | Done | Done |
 | 22 | Interface Groups | Logical grouping of multiple interfaces | Pending | Pending | Done |
 | 23 | Bridge Interface | Support for Layer-2 bridging | Pending | Pending | Done |
 | 24 | Wireless AP Mode | HostAPD integration for WiFi support | Pending | Pending | Done |
