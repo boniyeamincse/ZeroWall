@@ -38,12 +38,12 @@ This document tracks the 100 phases of software development for the ZeroWall pro
 | 32 | WireGuard Peer Mgmt | Peer configuration and key management | Done | Done | Done |
 | 33 | OpenVPN Server | Implementation of SSL/TLS VPN | Done | Done | Done |
 | 34 | OpenVPN Client | Client mode for site-to-site tunnels | Done | Done | Done |
-| 35 | OpenVPN Cert Mgmt | PKI and certificate handling | Pending | Pending | Done |
-| 36 | IPsec IKEv2 | Standard-based site-to-site VPN | Pending | Pending | Done |
-| 37 | VPN Routing | Static routes and VTI support | Pending | Pending | Done |
-| 38 | Split Tunneling | Implementation of AllowedIPs logic | Pending | Pending | Done |
-| 39 | Suricata Engine | IDS/IPS core integration | Pending | Pending | Done |
-| 40 | IDS Rules Manager | Automatic ruleset updater logic | Pending | Pending | Done |
+| 35 | OpenVPN Cert Mgmt | PKI and certificate handling | Done | Done | Done |
+| 36 | IPsec IKEv2 | Standard-based site-to-site VPN | Done | Done | Done |
+| 37 | VPN Routing | Static routes and VTI support | Done | Done | Done |
+| 38 | Split Tunneling | Implementation of AllowedIPs logic | Done | Done | Done |
+| 39 | Suricata Engine | IDS/IPS core integration | Done | Done | Done |
+| 40 | IDS Rules Manager | Automatic ruleset updater logic | Done | Done | Done |
 | 41 | IDS Alert Log | Real-time EVE JSON log parsing | Pending | Pending | Done |
 | 42 | GeoIP Blocking | MaxMind DB integration for firewall | Pending | Pending | Done |
 | 43 | Traffic Shaper | HFSC/FairQ implementation | Pending | Pending | Done |
