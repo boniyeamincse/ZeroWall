@@ -105,3 +105,5 @@ This document tracks the 100 phases of software development for the ZeroWall pro
 | 98 | Post-Launch Patching | Hotfixes for immediate issues | Planned | Planned | Pending |
 | 99 | Roadmap v1.1 | Planning for next feature cycle | Done | Done | Done |
 | 100 | Maintenance | Ongoing security and stability updates | Active | Active | Done |
+| 90 | API Documentation (Endpoints/Design) | Done |
+| 91 | API Documentation Push | Done |

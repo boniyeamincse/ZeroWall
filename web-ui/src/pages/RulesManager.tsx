@@ -11,7 +11,7 @@ interface Rule {
 }
 
 const RulesManager: React.FC = () => {
-    const [rules, setRules] = useState<Rule[]>([
+    const [rules] = useState<Rule[]>([
         { id: '1', action: 'pass', interface: 'WAN', protocol: 'TCP/UDP', source: 'Any', destination: '8.8.8.8', description: 'Allow DNS' },
         { id: '2', action: 'block', interface: 'LAN', protocol: 'Any', source: '192.168.2.0/24', destination: 'Any', description: 'Block Guest Network' }
     ]);

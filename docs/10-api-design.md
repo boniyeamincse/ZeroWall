@@ -72,4 +72,11 @@ ZeroWall uses standard HTTP status codes for error reporting:
 
 ---
 
+## 7. Detailed Documentation
+For detailed endpoint specifications and design analysis, see:
+- [API Endpoint Reference](api/endpoints.md)
+- [API Design Analysis](api/design-analysis.md)
+
+---
+
 *Previous: [Web Dashboard](09-web-dashboard.md) | Next: [Database Design](11-database-design.md)*
