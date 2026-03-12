@@ -36,11 +36,18 @@ const Sidebar = () => {
                 </div>
             </div>
 
-            <ul className="space-y-2 flex-1">
+            <ul className="space-y-1 flex-1 overflow-y-auto pr-2 custom-scrollbar">
                 <SidebarItem to="/" label="Dashboard" icon={Settings} />
-                <SidebarItem to="/firewall" label="Firewall Rules" icon={Lock} />
-                <SidebarItem to="/vpn" label="VPN Status" icon={Wifi} />
-                <SidebarItem to="/certs" label="Certificates" icon={Shield} />
+                <SidebarItem to="/network" label="Network" icon={Wifi} />
+                <SidebarItem to="/policy-objects" label="Policy & Object" icon={Shield} />
+                <SidebarItem to="/security-policy" label="Security Policy" icon={Lock} />
+                <SidebarItem to="/vpn" label="VPN" icon={Wifi} />
+                <SidebarItem to="/auth" label="User & Authentication" icon={Lock} />
+                <SidebarItem to="/system" label="System" icon={Settings} />
+                <SidebarItem to="/fabric" label="Security Fabric" icon={Shield} />
+                <SidebarItem to="/logs" label="Log" icon={Shield} />
+                <SidebarItem to="/reports" label="Report" icon={Settings} />
+                <SidebarItem to="/settings" label="Settings" icon={Settings} />
             </ul>
 
             <div className="border-t border-slate-800 pt-4 mt-4">
@@ -101,7 +108,7 @@ const AppContent: React.FC = () => {
     return (
         <Routes>
             <Route path="/login" element={
-                isAuthenticated ? <Navigate to="/" replace /> : <Login onLogin={() => {}} />
+                isAuthenticated ? <Navigate to="/" replace /> : <Login onLogin={() => { }} />
             } />
             <Route path="/" element={
                 <ProtectedRoute>
@@ -110,7 +117,21 @@ const AppContent: React.FC = () => {
                     </AppLayout>
                 </ProtectedRoute>
             } />
-            <Route path="/firewall" element={
+            <Route path="/network" element={
+                <ProtectedRoute>
+                    <AppLayout>
+                        <div className="text-white">Network Management</div>
+                    </AppLayout>
+                </ProtectedRoute>
+            } />
+            <Route path="/policy-objects" element={
+                <ProtectedRoute>
+                    <AppLayout>
+                        <div className="text-white">Policy & Object Management</div>
+                    </AppLayout>
+                </ProtectedRoute>
+            } />
+            <Route path="/security-policy" element={
                 <ProtectedRoute>
                     <AppLayout>
                         <FirewallRules />
@@ -124,10 +145,45 @@ const AppContent: React.FC = () => {
                     </AppLayout>
                 </ProtectedRoute>
             } />
-            <Route path="/certs" element={
+            <Route path="/auth" element={
                 <ProtectedRoute>
                     <AppLayout>
-                        <div className="text-white">Certificates Page</div>
+                        <div className="text-white">User & Authentication</div>
+                    </AppLayout>
+                </ProtectedRoute>
+            } />
+            <Route path="/system" element={
+                <ProtectedRoute>
+                    <AppLayout>
+                        <div className="text-white">System Configuration</div>
+                    </AppLayout>
+                </ProtectedRoute>
+            } />
+            <Route path="/fabric" element={
+                <ProtectedRoute>
+                    <AppLayout>
+                        <div className="text-white">Security Fabric</div>
+                    </AppLayout>
+                </ProtectedRoute>
+            } />
+            <Route path="/logs" element={
+                <ProtectedRoute>
+                    <AppLayout>
+                        <div className="text-white">System Logs</div>
+                    </AppLayout>
+                </ProtectedRoute>
+            } />
+            <Route path="/reports" element={
+                <ProtectedRoute>
+                    <AppLayout>
+                        <div className="text-white">System Reports</div>
+                    </AppLayout>
+                </ProtectedRoute>
+            } />
+            <Route path="/settings" element={
+                <ProtectedRoute>
+                    <AppLayout>
+                        <div className="text-white">Global Settings</div>
                     </AppLayout>
                 </ProtectedRoute>
             } />

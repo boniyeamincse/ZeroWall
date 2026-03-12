@@ -12,18 +12,25 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	"zerowall/api/auth"
+	"zerowall/api/firewall"
+	"zerowall/api/middleware"
 )
 
 var (
-	port       = flag.String("port", "8080", "HTTP port")
-	tlsPort    = flag.String("tls-port", "443", "HTTPS port")
-	certFile   = flag.String("cert", "/etc/zerowall/certs/server.crt", "TLS certificate")
-	keyFile    = flag.String("key", "/etc/zerowall/certs/server.key", "TLS private key")
-	enableTLS  = flag.Bool("tls", true, "Enable TLS")
+	port        = flag.String("port", "8080", "HTTP port")
+	tlsPort     = flag.String("tls-port", "443", "HTTPS port")
+	certFile    = flag.String("cert", "/etc/zerowall/certs/server.crt", "TLS certificate")
+	keyFile     = flag.String("key", "/etc/zerowall/certs/server.key", "TLS private key")
+	enableTLS   = flag.Bool("tls", true, "Enable TLS")
 	readTimeout  = flag.Int("read-timeout", 15, "Read timeout in seconds")
 	writeTimeout = flag.Int("write-timeout", 15, "Write timeout in seconds")
 	idleTimeout  = flag.Int("idle-timeout", 60, "Idle timeout in seconds")
+	jwtSecret   = flag.String("jwt-secret", "zerowall-secret-key-change-in-production", "JWT secret")
 )
+
+var jwt *auth.JWT
 
 type loggingResponseWriter struct {
 	http.ResponseWriter
@@ -68,6 +75,41 @@ func corsMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+func authMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/api/v1/login" || r.URL.Path == "/api/v1/health" || r.URL.Path == "/api/v1/status" {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		authHeader := r.Header.Get("Authorization")
+		if authHeader == "" {
+			http.Error(w, `{"error": "authorization required"}`, http.StatusUnauthorized)
+			return
+		}
+
+		token, err := jwt.ExtractTokenFromHeader(authHeader)
+		if err != nil {
+			http.Error(w, `{"error": "invalid authorization header"}`, http.StatusUnauthorized)
+			return
+		}
+
+		claims, err := jwt.VerifyToken(token)
+		if err != nil {
+			http.Error(w, `{"error": "invalid or expired token"}`, http.StatusUnauthorized)
+			return
+		}
+
+		r.Header.Set("X-User", claims.Username)
+		r.Header.Set("X-Role", claims.Role)
+		next.ServeHTTP(w, r)
+	})
+}
+
+func rateLimiterMiddleware(next http.Handler) http.Handler {
+	return middleware.RateLimit(100, 200)(next)
+}
+
 func redirectToHTTPS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.TLS == nil {
@@ -89,38 +131,100 @@ func redirectToHTTPS(next http.Handler) http.Handler {
 func createMux() *http.ServeMux {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/api/v1/status", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprintf(w, `{"status": "online", "version": "1.0.0-Beta"}`)
-	})
+	fwHandler := firewall.NewFirewallHandler()
+	statsHandler := firewall.NewStatsHandler()
+	queueHandler := firewall.NewQueueHandler()
 
-	mux.HandleFunc("/api/v1/health", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprintf(w, `{"healthy": true, "timestamp": %d}`, time.Now().Unix())
-	})
-
+	mux.HandleFunc("/api/v1/status", handleStatus)
+	mux.HandleFunc("/api/v1/health", handleHealth)
 	mux.HandleFunc("/api/v1/login", handleLogin)
+	mux.HandleFunc("/api/v1/logout", handleLogout)
 
-	mux.HandleFunc("/api/v1/firewall/rules", handleFirewallRules)
+	mux.HandleFunc("/api/v1/firewall/rules", fwHandler.GetRules)
+	mux.HandleFunc("/api/v1/firewall/rules/", fwHandler.GetRule)
+	mux.HandleFunc("/api/v1/firewall/rule", fwHandler.CreateRule)
+	mux.HandleFunc("/api/v1/firewall/rule/", fwHandler.UpdateRule)
+	mux.HandleFunc("/api/v1/firewall/rule/", fwHandler.DeleteRule)
+	mux.HandleFunc("/api/v1/firewall/rules/reorder", fwHandler.ReorderRules)
+	mux.HandleFunc("/api/v1/firewall/rule/toggle/", fwHandler.ToggleRule)
+
+	mux.HandleFunc("/api/v1/firewall/nat", fwHandler.GetNATRules)
+	mux.HandleFunc("/api/v1/firewall/nat/", fwHandler.CreateNATRule)
+	mux.HandleFunc("/api/v1/firewall/nat/", fwHandler.DeleteNATRule)
+
+	mux.HandleFunc("/api/v1/firewall/aliases", fwHandler.GetAliases)
+
+	mux.HandleFunc("/api/v1/firewall/stats", statsHandler.GetStats)
+	mux.HandleFunc("/api/v1/firewall/states", statsHandler.GetStateList)
+	mux.HandleFunc("/api/v1/firewall/logs", statsHandler.GetLogs)
+	mux.HandleFunc("/api/v1/firewall/flush", statsHandler.FlushStates)
+
+	mux.HandleFunc("/api/v1/firewall/queues", queueHandler.GetQueues)
+	mux.HandleFunc("/api/v1/firewall/queue", queueHandler.CreateQueue)
+	mux.HandleFunc("/api/v1/firewall/queue/", queueHandler.UpdateQueue)
+	mux.HandleFunc("/api/v1/firewall/queue/", queueHandler.DeleteQueue)
+	mux.HandleFunc("/api/v1/firewall/queue/stats", queueHandler.GetQueueStats)
+
+	mux.HandleFunc("/api/v1/firewall/apply", fwHandler.ApplyFirewall)
 
 	mux.Handle("/ws/", handleWebSocket)
 
 	return mux
 }
 
-func handleLogin(w http.ResponseWriter, r *http.Request) {
+func handleStatus(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, `{"token": "jwt_token_placeholder"}`)
+	fmt.Fprintf(w, `{"status": "online", "version": "1.0.0-Beta"}`)
 }
 
-func handleFirewallRules(w http.ResponseWriter, r *http.Request) {
+func handleHealth(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, `{"rules": []}`)
+	fmt.Fprintf(w, `{"healthy": true, "timestamp": %d}`, time.Now().Unix())
+}
+
+func handleLogin(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, `{"error": "method not allowed"}`, http.StatusMethodNotAllowed)
+		return
+	}
+
+	var creds struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	if err := decodeJSON(r.Body, &creds); err != nil {
+		http.Error(w, `{"error": "invalid request"}`, http.StatusBadRequest)
+		return
+	}
+
+	if creds.Username == "" || creds.Password == "" {
+		http.Error(w, `{"error": "username and password required"}`, http.StatusBadRequest)
+		return
+	}
+
+	token, err := jwt.GenerateToken(creds.Username, "admin", 24*time.Hour)
+	if err != nil {
+		http.Error(w, `{"error": "failed to generate token"}`, http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprintf(w, `{"success": true, "token": "%s", "user": {"username": "%s", "role": "admin"}}`, token, creds.Username)
+}
+
+func handleLogout(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprintf(w, `{"success": true, "message": "logged out"}`)
 }
 
 func handleWebSocket(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Fprintf(w, `{"error": "WebSocket not implemented"}`)
+}
+
+func decodeJSON(body interface{}, v interface{}) error {
+	return nil
 }
 
 func newServer(addr string, handler http.Handler) *http.Server {
@@ -146,7 +250,14 @@ func newServer(addr string, handler http.Handler) *http.Server {
 func main() {
 	flag.Parse()
 
-	baseHandler := loggingMiddleware(securityHeadersMiddleware(corsMiddleware(createMux())))
+	jwt = auth.NewJWT(*jwtSecret)
+
+	baseHandler := loggingMiddleware(
+		securityHeadersMiddleware(
+			corsMiddleware(
+				authMiddleware(
+					rateLimiterMiddleware(
+						createMux())))))
 
 	if *enableTLS {
 		go func() {
