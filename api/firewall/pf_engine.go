@@ -29,7 +29,7 @@ func NewPFEngine() *PFEngine {
 }
 
 // GenerateConfig creates the string content for pf.conf based on a list of rules
-func (e *PFEngine) GenerateConfig(rules []Rule, natRules []string) string {
+func (e *PFEngine) GenerateConfig(rules []FilterRule, natRules []string) string {
 	var sb strings.Builder
 
 	sb.WriteString("# ZeroWall - Generated pf.conf\n")
@@ -49,18 +49,9 @@ func (e *PFEngine) GenerateConfig(rules []Rule, natRules []string) string {
 	sb.WriteString("block all\n") // Default Deny
 
 	for _, r := range rules {
-		ruleStr := fmt.Sprintf("%s %s on %s", r.Action, r.Direction, r.Interface)
-		if r.Protocol != "any" {
-			ruleStr += fmt.Sprintf(" proto %s", r.Protocol)
+		if r.Enabled {
+			sb.WriteString(r.ToPFRule() + "\n")
 		}
-		ruleStr += fmt.Sprintf(" from %s to %s", r.Source, r.Destination)
-		if r.Port != "" {
-			ruleStr += fmt.Sprintf(" port %s", r.Port)
-		}
-		if r.Description != "" {
-			ruleStr += fmt.Sprintf(" # %s", r.Description)
-		}
-		sb.WriteString(ruleStr + "\n")
 	}
 
 	return sb.String()

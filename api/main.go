@@ -193,24 +193,30 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		Password string `json:"password"`
 	}
 
-	if err := decodeJSON(r.Body, &creds); err != nil {
+	if err := decodeJSON(r, &creds); err != nil {
 		http.Error(w, `{"error": "invalid request"}`, http.StatusBadRequest)
 		return
 	}
 
-	if creds.Username == "" || creds.Password == "" {
-		http.Error(w, `{"error": "username and password required"}`, http.StatusBadRequest)
+	// Default admin user for development if no database is present
+	users := []auth.User{
+		{Username: "admin", Password: auth.HashPassword("admin"), Role: "admin"},
+	}
+
+	user, err := auth.AuthenticateUser(creds.Username, creds.Password, users)
+	if err != nil {
+		http.Error(w, `{"error": "invalid credentials"}`, http.StatusUnauthorized)
 		return
 	}
 
-	token, err := jwt.GenerateToken(creds.Username, "admin", 24*time.Hour)
+	token, err := jwt.GenerateToken(user.Username, user.Role, 24*time.Hour)
 	if err != nil {
 		http.Error(w, `{"error": "failed to generate token"}`, http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, `{"success": true, "token": "%s", "user": {"username": "%s", "role": "admin"}}`, token, creds.Username)
+	fmt.Fprintf(w, `{"success": true, "token": "%s", "user": {"username": "%s", "role": "%s"}}`, token, user.Username, user.Role)
 }
 
 func handleLogout(w http.ResponseWriter, r *http.Request) {
@@ -223,8 +229,8 @@ func handleWebSocket(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, `{"error": "WebSocket not implemented"}`)
 }
 
-func decodeJSON(body interface{}, v interface{}) error {
-	return nil
+func decodeJSON(r *http.Request, v interface{}) error {
+	return json.NewDecoder(r.Body).Decode(v)
 }
 
 func newServer(addr string, handler http.Handler) *http.Server {

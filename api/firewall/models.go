@@ -96,6 +96,40 @@ func NewFilterRule() *FilterRule {
 	}
 }
 
+func (r *FilterRule) ToBasicRule() Rule {
+	src := "any"
+	if r.Source != nil && r.Source.Network != "" {
+		src = r.Source.Network
+		if r.Source.Not {
+			src = "!" + src
+		}
+	}
+
+	dst := "any"
+	if r.Destination != nil && r.Destination.Network != "" {
+		dst = r.Destination.Network
+		if r.Destination.Not {
+			dst = "!" + dst
+		}
+	}
+
+	port := ""
+	if r.Destination != nil && r.Destination.Port != "" {
+		port = r.Destination.Port
+	}
+
+	return Rule{
+		Action:      r.Action,
+		Direction:   r.Direction,
+		Interface:   r.Interface,
+		Protocol:    r.Protocol,
+		Source:      src,
+		Destination: dst,
+		Port:        port,
+		Description: r.Description,
+	}
+}
+
 func (r *FilterRule) ToPFRule() string {
 	rule := fmt.Sprintf("%s %s on %s", r.Action, r.Direction, r.Interface)
 

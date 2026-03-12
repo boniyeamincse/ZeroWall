@@ -84,7 +84,7 @@ func (h *FirewallHandler) CreateRule(w http.ResponseWriter, r *http.Request) {
 	}
 
 	validator := NewValidator()
-	if err := validator.validateRule(&newRule); err != nil {
+	if err := validator.ValidateRule(newRule.ToBasicRule()); err != nil {
 		h.respondError(w, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -550,22 +550,7 @@ func (h *FirewallHandler) applyRules(rules []FilterRule) error {
 		}
 	}
 
-	filterRules := make([]Rule, 0)
-	for _, r := range rules {
-		if r.Enabled {
-			filterRules = append(filterRules, Rule{
-				Action:      r.Action,
-				Direction:   r.Direction,
-				Interface:   r.Interface,
-				Protocol:    r.Protocol,
-				Source:      "",
-				Destination: "",
-				Description: r.Description,
-			})
-		}
-	}
-
-	config := h.Engine.GenerateConfig(filterRules, natRules)
+	config := h.Engine.GenerateConfig(rules, natRules)
 	return h.Engine.ApplyConfig(config)
 }
 
@@ -578,22 +563,7 @@ func (h *FirewallHandler) applyNATRules(rules []NATRule) error {
 	}
 
 	filterRules, _ := h.loadRules()
-	filterRuleObjs := make([]Rule, 0)
-	for _, r := range filterRules {
-		if r.Enabled {
-			filterRuleObjs = append(filterRuleObjs, Rule{
-				Action:      r.Action,
-				Direction:   r.Direction,
-				Interface:   r.Interface,
-				Protocol:    r.Protocol,
-				Source:      "",
-				Destination: "",
-				Description: r.Description,
-			})
-		}
-	}
-
-	config := h.Engine.GenerateConfig(filterRuleObjs, natRuleStrs)
+	config := h.Engine.GenerateConfig(filterRules, natRuleStrs)
 	return h.Engine.ApplyConfig(config)
 }
 
