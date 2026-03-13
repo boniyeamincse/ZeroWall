@@ -2,7 +2,6 @@ package system
 
 import (
 	"fmt"
-	"os"
 )
 
 // ConsoleMenu implements the TUI selection logic

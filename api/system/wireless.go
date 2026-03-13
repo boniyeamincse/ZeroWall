@@ -3,7 +3,6 @@ package system
 import (
 	"fmt"
 	"os"
-	"os/exec"
 )
 
 // WirelessConfig represents HostAPD settings for AP mode

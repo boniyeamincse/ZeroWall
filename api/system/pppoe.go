@@ -1,7 +1,6 @@
 package system
 
 import (
-	"fmt"
 	"os/exec"
 )
 
@@ -17,6 +16,7 @@ type PPPoEConfig struct {
 func ConfigurePPPoE(config PPPoEConfig) error {
 	// Simplified ifconfig-based approach (FreeBSD's pppoe(4))
 	cmd := exec.Command("ifconfig", "pppoe0", "create")
+	cmd.Run()
 	exec.Command("ifconfig", "pppoe0", "pppoe", "device", config.Interface).Run()
 	exec.Command("ifconfig", "pppoe0", "pppoe", "auth", "proto", "pap", "user", config.Username, "password", config.Password).Run()
 	exec.Command("ifconfig", "pppoe0", "up").Run()

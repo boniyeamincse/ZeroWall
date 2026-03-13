@@ -2,7 +2,6 @@ package system
 
 import (
 	"fmt"
-	"os/exec"
 )
 
 // Gateway represents a WAN link
