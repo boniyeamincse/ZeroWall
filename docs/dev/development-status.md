@@ -85,7 +85,7 @@ This document tracks the 100 phases of software development for the ZeroWall pro
 | 79 | REST API Docs | Swagger/OpenAPI spec generation | Done | Done | Done |
 | 80 | Reporting Engine | Integrated RRDtool telemetry | Done | Done | Done |
 | 80 | Plugin SDK | Development tools for 3rd parties | Pending | Pending | Done |
-| 81 | Unit Test Suite | Coverage for Go and JS modules | Pending | Pending | Done |
+| 81 | Unit Test Suite | Coverage for Go and JS modules | Done | Done | Done |
 | 82 | Web Application Firewall | SQLi/XSS protection via ModSecurity | Done | Done | Done |
 | 83 | Reverse Proxy | SSL offloading and load balancing | Done | Done | Done |
 | 84 | Content Filtering | URL and category-based blocking | Done | Done | Done |

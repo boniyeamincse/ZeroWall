@@ -25,9 +25,28 @@ func ListInstalledPackages() ([]Package, error) {
 	lines := strings.Split(string(out), "\n")
 	for _, line := range lines {
 		if line == "" { continue }
+		// pkg info format is usually "name-version description" or just "name-version"
 		fields := strings.Fields(line)
 		if len(fields) >= 1 {
-			packages = append(packages, Package{Name: fields[0]})
+			pkgInfo := fields[0]
+			lastDash := strings.LastIndex(pkgInfo, "-")
+			name := pkgInfo
+			version := "unknown"
+			if lastDash > 0 {
+				name = pkgInfo[:lastDash]
+				version = pkgInfo[lastDash+1:]
+			}
+			
+			desc := ""
+			if len(fields) > 1 {
+				desc = strings.Join(fields[1:], " ")
+			}
+			
+			packages = append(packages, Package{
+				Name:        name,
+				Version:     version,
+				Description: desc,
+			})
 		}
 	}
 	return packages, nil

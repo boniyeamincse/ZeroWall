@@ -17,7 +17,7 @@ func (fr FloatingRule) GeneratePFString() string {
 
 	// If no specific interfaces, it's global
 	if len(fr.ApplyToInterfaces) == 0 {
-		fr.Interface = "any"
+		r.Interface = "any"
 	}
 
 	// This is a simplified generator; actual implementation would handle 

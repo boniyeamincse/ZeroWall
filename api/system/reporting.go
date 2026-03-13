@@ -28,5 +28,19 @@ func (e ReportingEngine) UpdateMetric(name string, value float64) error {
 // GenerateGraph creates an SVG/PNG from RRD data
 func (e ReportingEngine) GenerateGraph(name, outputPath string) error {
 	fmt.Printf("Reporting: Generating graph %s -> %s\n", name, outputPath)
+	
+	rrdPath := e.DatabasePath + "/" + name + ".rrd"
+	// Example: rrdtool graph output.svg --start -1d --title "CPU Usage" DEF:val=cpu.rrd:value:AVERAGE LINE1:val#FF0000:"Usage"
+	cmd := exec.Command("rrdtool", "graph", outputPath,
+		"--start", "-1d",
+		"--title", name+" Metrics",
+		"--vertical-label", "Value",
+		"--imgformat", "SVG",
+		fmt.Sprintf("DEF:val=%s:value:AVERAGE", rrdPath),
+		"LINE1:val#00FF00:"+name)
+	
+	if out, err := cmd.CombinedOutput(); err != nil {
+		return fmt.Errorf("failed to generate graph: %v, output: %s", err, string(out))
+	}
 	return nil
 }

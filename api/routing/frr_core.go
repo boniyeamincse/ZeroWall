@@ -2,7 +2,6 @@ package routing
 
 import (
 	"fmt"
-	"os"
 	"os/exec"
 )
 
