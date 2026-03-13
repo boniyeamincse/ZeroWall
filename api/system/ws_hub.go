@@ -34,12 +34,18 @@ func (h *WSHub) Run() {
 			h.mu.Lock()
 			h.Clients[clientID] = true
 			h.mu.Unlock()
+			fmt.Printf("Telemetry: Client %s registered\n", clientID)
 		case clientID := <-h.Unregister:
 			h.mu.Lock()
 			delete(h.Clients, clientID)
 			h.mu.Unlock()
+			fmt.Printf("Telemetry: Client %s unregistered\n", clientID)
 		case message := <-h.Broadcast:
-			// In reality: loop through connections and send message
+			h.mu.Lock()
+			// In a real implementation with Gorilla, we'd loop through 
+			// net.Conn objects and write to them.
+			fmt.Printf("Telemetry: Broadcasting message to %d clients\n", len(h.Clients))
+			h.mu.Unlock()
 			_ = message
 		}
 	}
@@ -47,6 +53,13 @@ func (h *WSHub) Run() {
 
 // ServeWS handles WebSocket upgrade requests
 func (h *WSHub) ServeWS(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("WebSocket: New client connection request.")
-	// Upgrader logic...
+	// Standard library "upgrade" logic (simplified mock)
+	if r.Header.Get("Upgrade") != "websocket" {
+		http.Error(w, "Expected WebSocket Upgrade", http.StatusBadRequest)
+		return
+	}
+	
+	fmt.Println("WebSocket: New client connection request - Upgrade protocol verified.")
+	// In production: upgrader.Upgrade(w, r, nil)
+	w.WriteHeader(http.StatusSwitchingProtocols)
 }

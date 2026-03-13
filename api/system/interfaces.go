@@ -84,6 +84,21 @@ func GetDetailedStatus(name string) (string, error) {
 		return "", err
 	}
 
-	// Parsing would go here to extract media types, duplex settings, etc.
+	lines := strings.Split(string(output), "\n")
+	var media, status string
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, "media:") {
+			media = strings.TrimPrefix(line, "media:")
+		}
+		if strings.HasPrefix(line, "status:") {
+			status = strings.TrimPrefix(line, "status:")
+		}
+	}
+
+	if media != "" || status != "" {
+		return fmt.Sprintf("Interface: %s\nStatus: %s\nMedia: %s", name, strings.TrimSpace(status), strings.TrimSpace(media)), nil
+	}
+
 	return strings.TrimSpace(string(output)), nil
 }

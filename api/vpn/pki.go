@@ -42,7 +42,7 @@ func (ca CertificateAuthority) GenerateCA(basePath string) error {
 }
 
 // IssueCertificate signs a new client/server cert
-func IssueCertificate(caName string, certName string, commonName string, basePath string) error {
+func IssueCertificate(caName string, certName string, commonName string, basePath string, keyLen int, days int) error {
 	caKey := fmt.Sprintf("%s/ca.key", basePath)
 	caCert := fmt.Sprintf("%s/ca.crt", basePath)
 	
@@ -50,16 +50,29 @@ func IssueCertificate(caName string, certName string, commonName string, basePat
 	csrFile := fmt.Sprintf("%s/%s.csr", basePath, certName)
 	crtFile := fmt.Sprintf("%s/%s.crt", basePath, certName)
 
-	// Generate Key
-	exec.Command("openssl", "genrsa", "-out", keyFile, "2048").Run()
+	if keyLen == 0 {
+		keyLen = 2048
+	}
+	if days == 0 {
+		days = 365
+	}
 
-	// Generate CSR
+	// 1. Generate Key
+	cmd := exec.Command("openssl", "genrsa", "-out", keyFile, fmt.Sprintf("%d", keyLen))
+	if out, err := cmd.CombinedOutput(); err != nil {
+		return fmt.Errorf("key generation failed: %s", string(out))
+	}
+
+	// 2. Generate CSR
 	subj := fmt.Sprintf("/CN=%s", commonName)
-	exec.Command("openssl", "req", "-new", "-key", keyFile, "-out", csrFile, "-subj", subj).Run()
+	cmd = exec.Command("openssl", "req", "-new", "-key", keyFile, "-out", csrFile, "-subj", subj)
+	if out, err := cmd.CombinedOutput(); err != nil {
+		return fmt.Errorf("csr generation failed: %s", string(out))
+	}
 
-	// Sign Cert
-	cmd := exec.Command("openssl", "x509", "-req", "-in", csrFile, "-CA", caCert, "-CAkey", caKey, 
-		"-CAcreateserial", "-out", crtFile, "-days", "365")
+	// 3. Sign Cert
+	cmd = exec.Command("openssl", "x509", "-req", "-in", csrFile, "-CA", caCert, "-CAkey", caKey, 
+		"-CAcreateserial", "-out", crtFile, "-days", fmt.Sprintf("%d", days))
 	if out, err := cmd.CombinedOutput(); err != nil {
 		return fmt.Errorf("signing failed: %s", string(out))
 	}

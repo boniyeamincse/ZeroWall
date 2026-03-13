@@ -1,0 +1,16 @@
+# Binaries
+api/zwapi
+build/
+bin/
+
+# Certs (local)
+api/certs/*.key
+api/certs/*.crt
+
+# OS/IDE
+.DS_Store
+.vscode/
+
+# Temp
+*.tmp
+/home/boni/.gemini/antigravity/brain/

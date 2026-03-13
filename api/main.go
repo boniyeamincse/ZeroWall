@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"crypto/tls"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
@@ -16,21 +17,23 @@ import (
 	"zerowall/api/auth"
 	"zerowall/api/firewall"
 	"zerowall/api/middleware"
+	"zerowall/api/system"
 )
 
 var (
-	port        = flag.String("port", "8080", "HTTP port")
-	tlsPort     = flag.String("tls-port", "443", "HTTPS port")
-	certFile    = flag.String("cert", "/etc/zerowall/certs/server.crt", "TLS certificate")
-	keyFile     = flag.String("key", "/etc/zerowall/certs/server.key", "TLS private key")
-	enableTLS   = flag.Bool("tls", true, "Enable TLS")
+	port         = flag.String("port", "8080", "HTTP port")
+	tlsPort      = flag.String("tls-port", "443", "HTTPS port")
+	certFile     = flag.String("cert", "/etc/zerowall/certs/server.crt", "TLS certificate")
+	keyFile      = flag.String("key", "/etc/zerowall/certs/server.key", "TLS private key")
+	enableTLS    = flag.Bool("tls", false, "Enable TLS")
 	readTimeout  = flag.Int("read-timeout", 15, "Read timeout in seconds")
 	writeTimeout = flag.Int("write-timeout", 15, "Write timeout in seconds")
 	idleTimeout  = flag.Int("idle-timeout", 60, "Idle timeout in seconds")
-	jwtSecret   = flag.String("jwt-secret", "zerowall-secret-key-change-in-production", "JWT secret")
+	jwtSecret    = flag.String("jwt-secret", "zerowall-secret-key-change-in-production", "JWT secret")
 )
 
 var jwt *auth.JWT
+var wsHub *system.WSHub
 
 type loggingResponseWriter struct {
 	http.ResponseWriter
@@ -140,34 +143,34 @@ func createMux() *http.ServeMux {
 	mux.HandleFunc("/api/v1/login", handleLogin)
 	mux.HandleFunc("/api/v1/logout", handleLogout)
 
-	mux.HandleFunc("/api/v1/firewall/rules", fwHandler.GetRules)
-	mux.HandleFunc("/api/v1/firewall/rules/", fwHandler.GetRule)
-	mux.HandleFunc("/api/v1/firewall/rule", fwHandler.CreateRule)
-	mux.HandleFunc("/api/v1/firewall/rule/", fwHandler.UpdateRule)
-	mux.HandleFunc("/api/v1/firewall/rule/", fwHandler.DeleteRule)
-	mux.HandleFunc("/api/v1/firewall/rules/reorder", fwHandler.ReorderRules)
-	mux.HandleFunc("/api/v1/firewall/rule/toggle/", fwHandler.ToggleRule)
+	mux.HandleFunc("GET /api/v1/firewall/rules", fwHandler.GetRules)
+	mux.HandleFunc("GET /api/v1/firewall/rules/", fwHandler.GetRule)
+	mux.HandleFunc("POST /api/v1/firewall/rule", fwHandler.CreateRule)
+	mux.HandleFunc("PUT /api/v1/firewall/rule/", fwHandler.UpdateRule)
+	mux.HandleFunc("DELETE /api/v1/firewall/rule/", fwHandler.DeleteRule)
+	mux.HandleFunc("POST /api/v1/firewall/rules/reorder", fwHandler.ReorderRules)
+	mux.HandleFunc("PATCH /api/v1/firewall/rule/toggle/", fwHandler.ToggleRule)
 
-	mux.HandleFunc("/api/v1/firewall/nat", fwHandler.GetNATRules)
-	mux.HandleFunc("/api/v1/firewall/nat/", fwHandler.CreateNATRule)
-	mux.HandleFunc("/api/v1/firewall/nat/", fwHandler.DeleteNATRule)
+	mux.HandleFunc("GET /api/v1/firewall/nat", fwHandler.GetNATRules)
+	mux.HandleFunc("POST /api/v1/firewall/nat/", fwHandler.CreateNATRule)
+	mux.HandleFunc("DELETE /api/v1/firewall/nat/", fwHandler.DeleteNATRule)
 
-	mux.HandleFunc("/api/v1/firewall/aliases", fwHandler.GetAliases)
+	mux.HandleFunc("GET /api/v1/firewall/aliases", fwHandler.GetAliases)
 
-	mux.HandleFunc("/api/v1/firewall/stats", statsHandler.GetStats)
-	mux.HandleFunc("/api/v1/firewall/states", statsHandler.GetStateList)
-	mux.HandleFunc("/api/v1/firewall/logs", statsHandler.GetLogs)
-	mux.HandleFunc("/api/v1/firewall/flush", statsHandler.FlushStates)
+	mux.HandleFunc("GET /api/v1/firewall/stats", statsHandler.GetStats)
+	mux.HandleFunc("GET /api/v1/firewall/states", statsHandler.GetStateList)
+	mux.HandleFunc("GET /api/v1/firewall/logs", statsHandler.GetLogs)
+	mux.HandleFunc("DELETE /api/v1/firewall/flush", statsHandler.FlushStates)
 
-	mux.HandleFunc("/api/v1/firewall/queues", queueHandler.GetQueues)
-	mux.HandleFunc("/api/v1/firewall/queue", queueHandler.CreateQueue)
-	mux.HandleFunc("/api/v1/firewall/queue/", queueHandler.UpdateQueue)
-	mux.HandleFunc("/api/v1/firewall/queue/", queueHandler.DeleteQueue)
-	mux.HandleFunc("/api/v1/firewall/queue/stats", queueHandler.GetQueueStats)
+	mux.HandleFunc("GET /api/v1/firewall/queues", queueHandler.GetQueues)
+	mux.HandleFunc("POST /api/v1/firewall/queue", queueHandler.CreateQueue)
+	mux.HandleFunc("PUT /api/v1/firewall/queue/", queueHandler.UpdateQueue)
+	mux.HandleFunc("DELETE /api/v1/firewall/queue/", queueHandler.DeleteQueue)
+	mux.HandleFunc("GET /api/v1/firewall/queue/stats", queueHandler.GetQueueStats)
 
-	mux.HandleFunc("/api/v1/firewall/apply", fwHandler.ApplyFirewall)
+	mux.HandleFunc("POST /api/v1/firewall/apply", fwHandler.ApplyFirewall)
 
-	mux.Handle("/ws/", handleWebSocket)
+	mux.HandleFunc("GET /ws/", handleWebSocket)
 
 	return mux
 }
@@ -225,8 +228,7 @@ func handleLogout(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleWebSocket(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, `{"error": "WebSocket not implemented"}`)
+	wsHub.ServeWS(w, r)
 }
 
 func decodeJSON(r *http.Request, v interface{}) error {
@@ -257,6 +259,8 @@ func main() {
 	flag.Parse()
 
 	jwt = auth.NewJWT(*jwtSecret)
+	wsHub = system.NewWSHub()
+	go wsHub.Run()
 
 	baseHandler := loggingMiddleware(
 		securityHeadersMiddleware(
@@ -267,17 +271,27 @@ func main() {
 
 	if *enableTLS {
 		go func() {
-			tlsHandler := newServer(":"+*tlsPort, baseHandler)
+			tlsServer := newServer(":"+*tlsPort, baseHandler)
 			fmt.Printf("ZeroWall API [zwapi] HTTPS server starting on port %s...\n", *tlsPort)
-			if err := tlsHandler.ListenAndServeTLS(*certFile, *keyFile); err != nil && err != http.ErrServerClosed {
+			if err := tlsServer.ListenAndServeTLS(*certFile, *keyFile); err != nil && err != http.ErrServerClosed {
 				log.Fatalf("HTTPS server failed: %v", err)
 			}
 		}()
 	}
 
-	httpHandler := redirectToHTTPS(newServer(":"+*port, baseHandler))
-	fmt.Printf("ZeroWall API [zwapi] HTTP server starting on port %s (redirects to HTTPS)...\n", *port)
-	if err := httpHandler.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+	httpServer := newServer(":"+*port, func(h http.Handler) http.Handler {
+		if *enableTLS {
+			return redirectToHTTPS(h)
+		}
+		return h
+	}(baseHandler))
+
+	statusMsg := ""
+	if *enableTLS {
+		statusMsg = " (redirects to HTTPS)"
+	}
+	fmt.Printf("ZeroWall API [zwapi] HTTP server starting on port %s%s...\n", *port, statusMsg)
+	if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.Fatalf("HTTP server failed: %v", err)
 	}
 
@@ -286,6 +300,6 @@ func main() {
 	<-quit
 
 	fmt.Println("Shutting down server...")
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	_, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 }

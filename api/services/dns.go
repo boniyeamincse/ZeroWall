@@ -7,8 +7,9 @@ import (
 
 // DNSResolver represents Unbound configuration
 type DNSResolver struct {
-	Interfaces []string `json:"interfaces"`
-	Port        int      `json:"port"`
+	ConfigPath   string   `json:"config_path"`
+	Interfaces   []string `json:"interfaces"`
+	Port         int      `json:"port"`
 	EnableDNSSEC bool     `json:"enable_dnssec"`
 }
 
@@ -37,6 +38,10 @@ func (d DNSResolver) CreateDNSConfig() string {
 }
 
 // UpdateResolver applies the configuration
-func UpdateResolver(config string) error {
-	return os.WriteFile("/var/unbound/unbound.conf", []byte(config), 0644)
+func (d DNSResolver) UpdateResolver(config string) error {
+	path := d.ConfigPath
+	if path == "" {
+		path = "/var/unbound/unbound.conf"
+	}
+	return os.WriteFile(path, []byte(config), 0644)
 }

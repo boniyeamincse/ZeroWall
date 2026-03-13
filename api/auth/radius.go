@@ -2,7 +2,6 @@ package auth
 
 import (
 	"fmt"
-	"net"
 )
 
 // RadiusClient handles authentication requests to a RADIUS server

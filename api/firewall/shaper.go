@@ -2,7 +2,6 @@ package firewall
 
 import (
 	"fmt"
-	"os/exec"
 )
 
 // TrafficShaper handles QoS and bandwidth management

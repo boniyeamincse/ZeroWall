@@ -8,13 +8,21 @@ import (
 	"sync"
 )
 
-type GzipResponseWriter struct {
+type gzipResponseWriter struct {
 	io.Writer
 	http.ResponseWriter
 }
 
-func (grw *GzipResponseWriter) Write(p []byte) (int, error) {
-	return grw.Writer.Write(p)
+func (w *gzipResponseWriter) Write(b []byte) (int, error) {
+	return w.Writer.Write(b)
+}
+
+func (w *gzipResponseWriter) Header() http.Header {
+	return w.ResponseWriter.Header()
+}
+
+func (w *gzipResponseWriter) WriteHeader(code int) {
+	w.ResponseWriter.WriteHeader(code)
 }
 
 type GzipHandler struct {
@@ -47,31 +55,17 @@ func (gh *GzipHandler) Middleware(next http.Handler) http.Handler {
 		gz := gh.pool.Get().(*gzip.Writer)
 		defer gh.pool.Put(gz)
 		gz.Reset(w)
+		defer gz.Close()
 
-		w.Header().Set("Content-Encoding", " gzip")
+		w.Header().Set("Content-Encoding", "gzip")
 
-		grw := &GzipResponseWriter{
+		grw := &gzipResponseWriter{
 			Writer:         gz,
 			ResponseWriter: w,
 		}
 
-		gw := &gzipWriter{
-			ResponseWriter: w,
-			Writer:         gz,
-		}
-
-		next.ServeHTTP(gw, r)
-		gz.Close()
+		next.ServeHTTP(grw, r)
 	})
-}
-
-type gzipWriter struct {
-	http.ResponseWriter
-	*gzip.Writer
-}
-
-func (gw *gzipWriter) Write(p []byte) (int, error) {
-	return gw.Writer.Write(p)
 }
 
 func Gzip() func(http.Handler) http.Handler {

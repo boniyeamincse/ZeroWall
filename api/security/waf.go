@@ -2,7 +2,6 @@ package security
 
 import (
 	"fmt"
-	"os/exec"
 )
 
 // WAFManager handles Web Application Firewall configuration

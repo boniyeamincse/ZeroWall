@@ -115,11 +115,11 @@ func (j *JWT) ExtractTokenFromHeader(authHeader string) (string, error) {
 }
 
 func ValidatePassword(password, hash string) bool {
-	passwordHash := hashPassword(password)
+	passwordHash := HashPassword(password)
 	return subtle.ConstantTimeCompare([]byte(passwordHash), []byte(hash)) == 1
 }
 
-func hashPassword(password string) string {
+func HashPassword(password string) string {
 	h := sha256.Sum256([]byte(password))
 	return base64.StdEncoding.EncodeToString(h[:])
 }

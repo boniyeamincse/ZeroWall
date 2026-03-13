@@ -2,31 +2,50 @@ package firewall
 
 import "fmt"
 
-// NATRule represents a Network Address Translation or Port Forwarding rule
-type NATRule struct {
-	Type        string `json:"type"` // nat, rdr (port forward)
-	Interface   string `json:"interface"`
-	Protocol    string `json:"protocol"`
-	Source      string `json:"source"`
-	ExtPort     string `json:"external_port"`
-	InternalIP  string `json:"internal_ip"`
-	IntPort     string `json:"internal_port"`
-}
-
 // PortForward generates a pf 'rdr' rule string
 func (nr NATRule) PortForward() string {
-	if nr.Type != "rdr" {
+	if nr.Type != "rdr" || nr.Interface == "" {
 		return ""
 	}
-	return fmt.Sprintf("rdr on %s proto %s from any to any port %s -> %s port %s",
-		nr.Interface, nr.Protocol, nr.ExtPort, nr.InternalIP, nr.IntPort)
+
+	src := "any"
+	if nr.Source != nil && nr.Source.Network != "" {
+		src = nr.Source.Network
+	}
+
+	dst := "any"
+	if nr.Destination != nil && nr.Destination.Network != "" {
+		dst = nr.Destination.Network
+	}
+
+	extPort := ""
+	if nr.Destination != nil && nr.Destination.Port != "" {
+		extPort = "port " + nr.Destination.Port
+	}
+
+	target := ""
+	if nr.Target != nil {
+		target = nr.Target.Network
+		if nr.Target.Port != "" {
+			target += " port " + nr.Target.Port
+		}
+	}
+
+	return fmt.Sprintf("rdr on %s proto %s from %s to %s %s -> %s",
+		nr.Interface, nr.Protocol, src, dst, extPort, target)
 }
 
 // OutboundNAT generates a pf 'nat' rule string
 func (nr NATRule) OutboundNAT() string {
-	if nr.Type != "nat" {
+	if nr.Type != "nat" || nr.Interface == "" {
 		return ""
 	}
+
+	src := "any"
+	if nr.Source != nil && nr.Source.Network != "" {
+		src = nr.Source.Network
+	}
+
 	return fmt.Sprintf("nat on %s from %s to any -> (%s)",
-		nr.Interface, nr.Source, nr.Interface)
+		nr.Interface, src, nr.Interface)
 }
